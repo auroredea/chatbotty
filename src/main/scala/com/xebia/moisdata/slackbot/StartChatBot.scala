@@ -46,7 +46,7 @@ object StartChatBot extends App {
       )
 
       request.map { response =>
-        log.debug(s"chatbot answering on ${message.channel} : \"${response.getResponseBody}\"")
+        log.debug(s"chatbot answering on ${message.channel} : ${response.getResponseBody}")
         client.sendMessage(message.channel, response.getResponseBody)
       }
     }
