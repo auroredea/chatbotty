@@ -39,12 +39,17 @@ class TFIDFPredictor:
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "Hello, World!"
+@app.route('/rnn', methods=['POST'])
+def rnn():
+    requestBody = request.json
 
-@app.route('/nlp', methods=['POST'])
-def nlp():
+    context = requestBody["context"]
+    question = requestBody["question"]
+
+    return "RNN TODO with " + context + " and " + question
+
+@app.route('/tfidf', methods=['POST'])
+def tfidf():
     requestBody = request.json
 
     context = requestBody["context"]
