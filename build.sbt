@@ -18,4 +18,6 @@ libraryDependencies += "com.github.gilbertw1" %% "slack-scala-client" % "0.2.1"
 libraryDependencies ++= Seq("org.slf4j" % "slf4j-api" % "1.7.25",
                             "org.slf4j" % "slf4j-simple" % "1.7.25")
 
+libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
+
 //fork in run := true
