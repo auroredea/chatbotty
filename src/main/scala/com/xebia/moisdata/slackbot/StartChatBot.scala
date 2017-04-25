@@ -28,14 +28,13 @@ object StartChatBot extends App {
   val selfId: String = client.state.self.id
 
   client.onMessage { message =>
-    val question = message.text
-
-    val mentionedIds = SlackUtil.extractMentionedIds(question)
+    val mentionedIds = SlackUtil.extractMentionedIds(message.text)
 
     if(mentionedIds.contains(selfId)) {
 
+      val question = message.text.replace(s"<@$selfId>", "")
+      Contexts.add(message.user, question)
       val context = Contexts.toContext(message.user).getOrElse(question)
-
       val messageJson = Message(context, question).toJson
 
       log.info(s"performing request to ${pythonHost.toRequest.getVirtualHost} with JSON body ${Json.stringify(messageJson)}")
@@ -47,7 +46,7 @@ object StartChatBot extends App {
       )
 
       request.map { response =>
-        log.info(s"chatbot answering on ${message.channel} : ${response.getResponseBody}")
+        log.debug(s"chatbot answering on ${message.channel} : \"${response.getResponseBody}\"")
         client.sendMessage(message.channel, response.getResponseBody)
       }
     }

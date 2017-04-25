@@ -18,14 +18,17 @@ object Contexts {
     if(userContextQueue.isEmpty) None
     else userContextQueue
           .take(10)
+          .reverse
           .reduceRightOption((a, b) => s"$a $b")
   }
 
   def add(user: String, context: String): Unit = {
-    log.info(s"adding question $context for $user")
+    log.debug(s"adding question $context for $user")
 
     contextQueue
       .push((user, context))
+
+    println(contextQueue)
   }
 
 }
