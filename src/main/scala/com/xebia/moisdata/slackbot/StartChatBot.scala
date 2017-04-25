@@ -38,6 +38,8 @@ object StartChatBot extends App {
 
       val messageJson = generateContextAndMessage(slackMessage).toJson
 
+      //TODO typing event of chatbot
+
       log.info(s"performing request to ${pythonHost.toRequest.getVirtualHost} with JSON body ${Json.stringify(messageJson)}")
       val request = Http(pythonHost
         .addHeader("Content-Type", "application/json")
