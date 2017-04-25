@@ -3,6 +3,7 @@ from flask import Flask, request
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
+import sys
 
 
 class TFIDFPredictor:
@@ -48,13 +49,18 @@ def nlp():
 
     context = requestBody["context"]
     # question = requestBody["question"]
-    response = pred.predict(context)
+    response = model.predict(context)
 
     return response
 
 if __name__ == '__main__':
-    data_path = "/Users/Mouloud/Documents/Xebia/LeMoisDeLaData/2017/nlp/data/ubuntu/train.csv"
+    data_path = sys.argv[1]
+    print("Data Path is :" + data_path)
+    print("Loading Data...")
     # TFIDF predictor
-    pred = TFIDFPredictor(data_path)
-    pred.train()
-    app.run(debug=True)
+    model = TFIDFPredictor(data_path)
+    print("Loading Data succeeded")
+    print("Training TFIDF Model...")
+    model.train()
+    print("Training TFIDF Model succeeded")
+    app.run(debug=False, use_reloader=False)
