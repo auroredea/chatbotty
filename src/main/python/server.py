@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
+import datetime
+import time
 
 
 class TFIDFPredictor:
@@ -19,7 +21,9 @@ class TFIDFPredictor:
         # Load Data
         self._train_df = pd.read_csv(path)
         self._train_df.Label = self._train_df.Label.astype('category')
-        self._utterances = np.array(self._train_df["Utterance"])
+        self._utterances = self._train_df[self._train_df['Label'] == 1.0]
+        self._utterances = np.array(self._utterances['Context'] + "%" + self._utterances['Utterance'])
+        # self._utterances = np.array(self._train_df["Utterance"])
 
     def train(self):
         self._vectorizer.fit(np.append(self._train_df.Context.values, self._train_df.Utterance.values))
@@ -34,8 +38,9 @@ class TFIDFPredictor:
         result = result.todense()
         result = np.asarray(result).flatten()
         result = np.argsort(result, axis=0)[::-1]
+        response = str(self._utterances[result[0]])
         # Sort by top results and return the indices in descending order
-        return self._utterances[result[0]]
+        return response.split("%")[1]
 
 app = Flask(__name__)
 
@@ -49,8 +54,11 @@ def nlp():
 
     context = requestBody["context"]
     # question = requestBody["question"]
+    before = datetime.datetime.now()
     response = model.predict(context)
-
+    after = datetime.datetime.now()
+    delta = after - before
+    print("Response time :" + str(delta))
     return response
 
 if __name__ == '__main__':
