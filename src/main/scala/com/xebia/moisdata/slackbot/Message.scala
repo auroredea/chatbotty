@@ -11,5 +11,3 @@ object Message {
   implicit val writes: Writes[Message] = Json.writes[Message]
   implicit val reads: Reads[Message] = Json.reads[Message]
 }
-
-

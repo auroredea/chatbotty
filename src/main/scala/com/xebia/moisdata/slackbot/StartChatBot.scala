@@ -34,15 +34,16 @@ object StartChatBot extends App {
 
     if(mentionedIds.contains(selfId)) {
 
-      Contexts.add(message.user, question)
       val context = Contexts.toContext(message.user).getOrElse(question)
 
       val messageJson = Message(context, question).toJson
 
-      log.info(s"performing request to \"$pythonHost\" with JSON body ${Json.stringify(messageJson)}")
+      log.info(s"performing request to ${pythonHost.toRequest.getVirtualHost} with JSON body ${Json.stringify(messageJson)}")
       val request = Http(pythonHost
+        .addHeader("Content-Type", "application/json")
+        .setBodyEncoding("UTF-8")
         .setBody(Json.stringify(messageJson))
-        .GET
+        .POST
       )
 
       request.map { response =>

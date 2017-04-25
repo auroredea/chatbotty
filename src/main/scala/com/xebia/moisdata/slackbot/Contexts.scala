@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 object Contexts {
 
-  lazy val contextQueue: mutable.Queue[(String, String)] = new mutable.Queue()
+  lazy val contextQueue: mutable.Stack[(String, String)] = new mutable.Stack()
 
   def toContext(user: String): Option[String] = {
     if(contextQueue.isEmpty) None
@@ -17,7 +17,7 @@ object Contexts {
 
     if(userContextQueue.isEmpty) None
     else userContextQueue
-          .drop(9)
+          .take(10)
           .reduceRightOption((a, b) => s"$a $b")
   }
 
@@ -25,8 +25,7 @@ object Contexts {
     log.info(s"adding question $context for $user")
 
     contextQueue
-      .filter(context => context._1 == user)
-      .enqueue((user, context))
+      .push((user, context))
   }
 
 }
