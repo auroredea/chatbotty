@@ -14,7 +14,8 @@ object StartChatBot extends App {
 
   lazy val log = LoggerFactory.getLogger(getClass)
 
-  lazy val pythonHost = url("http://127.0.0.1:5000/nlp")
+  lazy val pythonHostTfidf = url("http://127.0.0.1:5000/tfidf")
+  lazy val pythonHostRNN = url("http://127.0.0.1:5000/rnn")
 
   val configFactory = ConfigFactory.load()
   val TOKEN = configFactory.getString("api.key")
@@ -32,7 +33,10 @@ object StartChatBot extends App {
 
     if(mentionedIds.contains(selfId)) {
 
-      val question = message.text.replace(s"<@$selfId>", "")
+      var pythonHost = pythonHostRNN
+      if(message.text.contains("!tf")) pythonHost = pythonHostTfidf
+
+      val question = message.text.replace(s"<@$selfId>", "").replace("!tf", "")
       Contexts.add(message.user, question)
       val context = Contexts.toContext(message.user).getOrElse(question)
       val messageJson = Message(context, question).toJson
