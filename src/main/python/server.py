@@ -14,7 +14,7 @@ def nlp():
     context = requestBody["context"]
     question = requestBody["question"]
 
-    return "Calling python through scala with context = '" + context + "' and question = " + question
+    return " push works !! Calling python through scala with context= '" + context + "' and question = " + question
 
 if __name__ == '__main__':
     app.run(debug=True)
