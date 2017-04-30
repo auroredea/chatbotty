@@ -22,7 +22,7 @@ class TFIDFPredictor:
         self._train_df = pd.read_csv(path)
         self._train_df.Label = self._train_df.Label.astype('category')
 
-    def train(self, nb_clusters):
+    def train(self):
         self._vectorizer.fit(np.append(self._train_df.Context.values, self._train_df.Utterance.values))
         self._utterances = self._train_df[self._train_df['Label'] == 1.0].reset_index()
         self._pipelinemodel = joblib.load('../../../model/kmeans_pipeline.pkl')

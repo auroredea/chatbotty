@@ -37,6 +37,6 @@ if __name__ == '__main__':
     model = TFIDFPredictor(data_path)
     print("Loading Data succeeded")
     print("Training TFIDF Model...")
-    model.train(5)
+    model.train()
     print("Training TFIDF Model succeeded")
     app.run(debug=False, use_reloader=False)
