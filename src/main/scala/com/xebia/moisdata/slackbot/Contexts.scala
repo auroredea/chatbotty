@@ -27,8 +27,6 @@ object Contexts {
 
     contextQueue
       .push((user, context))
-
-    println(contextQueue)
   }
 
 }
