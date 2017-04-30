@@ -2,11 +2,11 @@ package com.xebia.moisdata.slackbot
 
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
-import org.slf4j.LoggerFactory
-import slack.{SlackUtil, models}
-import slack.rtm.SlackRtmClient
 import dispatch._
+import org.slf4j.LoggerFactory
 import play.api.libs.json.Json
+import slack.rtm.SlackRtmClient
+import slack.{SlackUtil, models}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -38,9 +38,7 @@ object StartChatBot extends App {
 
       val messageJson = generateContextAndMessage(slackMessage).toJson
 
-      //TODO typing event of chatbot
-
-      log.info(s"performing request to ${pythonHost.toRequest.getVirtualHost} with JSON body ${Json.stringify(messageJson)}")
+      log.info(s"performing request to ${pythonHost.toRequest.getUrl} with JSON body ${Json.stringify(messageJson)}")
       val request = Http(pythonHost
         .addHeader("Content-Type", "application/json")
         .setBodyEncoding("UTF-8")
@@ -48,11 +46,17 @@ object StartChatBot extends App {
         .POST
       )
 
+      while (!request.isCompleted) {
+        client.indicateTyping(slackMessage.channel)
+        Thread.sleep(5000)
+        log.info("thread sleeped")
+      }
+
       request.map { response =>
         val cleanedAnswer = cleanAnswer(response.getResponseBody)
 
         log.debug(s"chatbot answering on ${slackMessage.channel} : $cleanedAnswer")
-        client.sendMessage(slackMessage.channel, cleanedAnswer)
+        client.sendMessage(slackMessage.channel, s"<@${slackMessage.user}> ".concat(cleanedAnswer))
       }
     }
   }
